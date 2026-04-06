@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 
 import '../../../Core/Services/DebugLoggerService.dart';
 enum Activity { none, sedentary, mid, high }

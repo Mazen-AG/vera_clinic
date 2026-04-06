@@ -9,6 +9,7 @@ import '../../Core/Model/Classes/Visit.dart';
 import 'UpdateVisitDetailsTEC.dart';
 
 import '../../Core/Services/DebugLoggerService.dart';
+
 Future<bool> updateVisit(BuildContext context, Visit v) async {
   try {
     Client? client =
@@ -22,11 +23,9 @@ Future<bool> updateVisit(BuildContext context, Visit v) async {
         double.tryParse(UpdateVisitDetailsTEC.visitWeightController.text) ??
             0.0;
 
-    if (double.tryParse(UpdateVisitDetailsTEC.visitBMIController.text) !=
-        null) {
-      v.mBMI = normalizeBmi(double.parse(UpdateVisitDetailsTEC.visitBMIController.text));
-    } else if (v.mWeight > 0 && client?.mHeight != null && client!.mHeight! > 0) {
-      v.mBMI = normalizeBmi(v.mWeight / ((client.mHeight! / 100) * (client.mHeight! / 100)));
+    if (v.mWeight > 0 && client?.mHeight != null && client!.mHeight! > 0) {
+      v.mBMI = normalizeBmi(
+          v.mWeight / ((client.mHeight! / 100) * (client.mHeight! / 100)));
     } else {
       v.mBMI = 0.0;
     }

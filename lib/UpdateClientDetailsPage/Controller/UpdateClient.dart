@@ -18,6 +18,7 @@ import '../../Core/View/PopUps/MySnackBar.dart';
 import 'UpdateClientDetailsTEC.dart';
 
 import '../../Core/Services/DebugLoggerService.dart';
+
 Future<bool> updateClient(
   BuildContext context,
   Client client,
@@ -61,24 +62,25 @@ Future<bool> _validatePhoneNumber(BuildContext context, Client client) async {
 void _updateClientFields(Client client) {
   client.mName = UpdateClientDetailsTEC.nameController.text;
   client.mClientPhoneNum = UpdateClientDetailsTEC.phoneController.text;
-  client.mBirthdate =
-      (() {
-        final birthYearText =
-            UpdateClientDetailsTEC.birthYearController.text.trim();
-        final parsedYear = int.tryParse(birthYearText);
-        if (parsedYear == null) return null;
-        return DateTime(parsedYear, 12, 31);
-      })();
+  client.mBirthdate = (() {
+    final birthYearText =
+        UpdateClientDetailsTEC.birthYearController.text.trim();
+    final parsedYear = int.tryParse(birthYearText);
+    if (parsedYear == null) return null;
+    return DateTime(parsedYear, 12, 31);
+  })();
   client.mDiet = UpdateClientDetailsTEC.dietController.text;
   client.Plat = UpdateClientDetailsTEC.platControllers
       .map((e) => double.tryParse(e.text) ?? 0.0)
       .toList();
   client.mHeight = (() {
-    final parsed = double.tryParse(UpdateClientDetailsTEC.heightController.text);
+    final parsed =
+        double.tryParse(UpdateClientDetailsTEC.heightController.text);
     return parsed == null ? null : normalizeToDecimals(parsed, 1);
   })();
   client.mWeight = (() {
-    final parsed = double.tryParse(UpdateClientDetailsTEC.weightController.text);
+    final parsed =
+        double.tryParse(UpdateClientDetailsTEC.weightController.text);
     return parsed == null ? null : normalizeToDecimals(parsed, 1);
   })();
   client.mSubscriptionType = getSubscriptionTypeFromString(
@@ -146,14 +148,17 @@ Future<bool> _updateClientMonthlyFollowUp(
     cmfu.mMaxWeight = normalizeToDecimals(
         double.tryParse(UpdateClientDetailsTEC.maxWeightController.text), 1);
     cmfu.mOptimalWeight = normalizeToDecimals(
-        double.tryParse(UpdateClientDetailsTEC.optimalWeightController.text), 1);
+        double.tryParse(UpdateClientDetailsTEC.optimalWeightController.text),
+        1);
     cmfu.mBMR = normalizeToDecimals(
         double.tryParse(UpdateClientDetailsTEC.bmrController.text), 0);
     cmfu.mMaxCalories = normalizeToDecimals(
         double.tryParse(UpdateClientDetailsTEC.maxCaloriesController.text), 0);
     cmfu.mDailyCalories = normalizeToDecimals(
-        double.tryParse(UpdateClientDetailsTEC.dailyCaloriesController.text), 0);
-    // No dedicated controller for muscle mass in UpdateClientDetailsTEC; leave unchanged
+        double.tryParse(UpdateClientDetailsTEC.dailyCaloriesController.text),
+        0);
+    cmfu.mMuscleMass = normalizeToDecimals(
+        double.tryParse(UpdateClientDetailsTEC.muscleMassController.text), 1);
     await context
         .read<ClientMonthlyFollowUpProvider>()
         .updateClientMonthlyFollowUp(cmfu);

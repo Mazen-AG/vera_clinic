@@ -33,7 +33,6 @@ class _SaveVisitButtonState extends State<SaveVisitButton> {
       onPressed: () async {
         if (!verifyVisitInput(
             context,
-            NewVisitTEC.visitBMIController,
             NewVisitTEC.visitWeightController,
             NewVisitTEC.visitDateController)) {
           return;
@@ -52,6 +51,7 @@ class _SaveVisitButtonState extends State<SaveVisitButton> {
             success ? Colors.green : Colors.red);
 
         if (success) {
+        if (!mounted) return;
           Navigator.pop(context);
         }
 

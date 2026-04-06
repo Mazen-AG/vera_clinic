@@ -13,7 +13,7 @@ class ClinicProvider with ChangeNotifier {
   final ClinicFirestoreMethods _clinicFirestoreMethods =
       ClinicFirestoreMethods();
   Clinic? clinic;
-  List<Client> _checkedInClients = [];
+  final List<Client> _checkedInClients = [];
 
   // Retry status for UI feedback during fetches
   int? _currentRetryAttempt;
@@ -58,6 +58,15 @@ class ClinicProvider with ChangeNotifier {
     checkedInClients
       ..clear()
       ..addAll(uniqueList);
+  }
+
+  void _sortCheckedInClients() {
+    if (clinic == null) return;
+    checkedInClients.sort((a, b) {
+      final timeA = clinic!.getCheckInTime(a.mClientId) ?? '';
+      final timeB = clinic!.getCheckInTime(b.mClientId) ?? '';
+      return timeA.compareTo(timeB);
+    });
   }
 
   Map<String, bool> _extractArrivalStates(Clinic? clinic) {
@@ -145,6 +154,8 @@ class ClinicProvider with ChangeNotifier {
       clinic!.mDailyClientIds.add(client.mClientId);
     }
 
+    _sortCheckedInClients();
+
     await updateClinic(clinic!);
     notifyListeners();
   }
@@ -156,13 +167,7 @@ class ClinicProvider with ChangeNotifier {
     await _clinicFirestoreMethods.updateArrivedStatus(clientId, !currentStatus);
     clinic!.toggleHasArrived(clientId);
 
-    // Re-order the local list to move the toggled client to the end
-    final clientIndex =
-        checkedInClients.indexWhere((c) => c.mClientId == clientId);
-    if (clientIndex != -1) {
-      final client = checkedInClients.removeAt(clientIndex);
-      checkedInClients.add(client);
-    }
+    _sortCheckedInClients();
 
     notifyListeners();
   }
@@ -248,7 +253,11 @@ class ClinicProvider with ChangeNotifier {
 
     if (listChanged || arrivalStatusChanged) {
       _removeDuplicateCheckedInClients();
+      _sortCheckedInClients();
       notifyListeners();
+    } else {
+      // Always ensure it's sorted even if no new items were added
+      _sortCheckedInClients();
     }
 
     return checkedInClients;

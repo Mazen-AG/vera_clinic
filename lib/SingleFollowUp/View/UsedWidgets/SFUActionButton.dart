@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vera_clinic/NewVisit/Controller/NewVisitUF.dart';
 
 import '../../../Core/Model/Classes/Client.dart';
 import '../../../Core/View/PopUps/MySnackBar.dart';
@@ -11,10 +10,12 @@ class SingleFollowUpActionButton extends StatefulWidget {
   const SingleFollowUpActionButton({super.key, required this.client});
 
   @override
-  State<SingleFollowUpActionButton> createState() => _SingleFollowUpActionButtonState();
+  State<SingleFollowUpActionButton> createState() =>
+      _SingleFollowUpActionButtonState();
 }
 
-class _SingleFollowUpActionButtonState extends State<SingleFollowUpActionButton> {
+class _SingleFollowUpActionButtonState
+    extends State<SingleFollowUpActionButton> {
   bool _isLoading = false;
 
   @override
@@ -46,10 +47,13 @@ class _SingleFollowUpActionButtonState extends State<SingleFollowUpActionButton>
 
                       showMySnackBar(
                         context,
-                        success ? 'تم تسجيل الزيارة بنجاح' : 'فشل تسجيل الزيارة',
+                        success
+                            ? 'تم تسجيل الزيارة بنجاح'
+                            : 'فشل تسجيل الزيارة',
                         success ? Colors.green : Colors.red,
                       );
                       if (success) {
+                        if (!mounted) return;
                         Navigator.pop(context);
                       }
                     } finally {

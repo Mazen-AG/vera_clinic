@@ -42,7 +42,6 @@ class _UpdateVisitButtonState extends State<UpdateVisitButton> {
       onPressed: () async {
         if (!verifyVisitInput(
             context,
-            UpdateVisitDetailsTEC.visitBMIController,
             UpdateVisitDetailsTEC.visitWeightController,
             UpdateVisitDetailsTEC.visitDateController)) {
           return;
@@ -60,6 +59,7 @@ class _UpdateVisitButtonState extends State<UpdateVisitButton> {
 
         if (success) {
           widget.onVisitUpdated();
+          if (!mounted) return;
           Navigator.pop(context);
         }
 

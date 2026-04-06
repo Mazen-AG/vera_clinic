@@ -15,6 +15,7 @@ import 'InfoCards/SubscriptionCard.dart';
 import '../../../Core/View/Reusable widgets/MyInputField.dart';
 
 import '../../Core/Services/DebugLoggerService.dart';
+
 class CheckInPage extends StatefulWidget {
   final Client? client;
   const CheckInPage({super.key, required this.client});
@@ -53,9 +54,9 @@ class _CheckInPageState extends State<CheckInPage> {
 
       // Fetch last visit
       if (client?.mLastVisitId != null) {
-        final lastVisitResult = await context
-            .read<VisitProvider>()
-            .getVisit(client!.mLastVisitId!);
+        if (!mounted) return;
+        final lastVisitResult =
+            await context.read<VisitProvider>().getVisit(client!.mLastVisitId!);
 
         if (lastVisitResult != null) {
           lastClientVisit = lastVisitResult;
@@ -128,13 +129,16 @@ class _CheckInPageState extends State<CheckInPage> {
                                 // Check-in time input with AM/PM buttons
                                 Center(
                                   child: Container(
-                                    width: 300, // Fixed width instead of full width
-                                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                    width:
+                                        300, // Fixed width instead of full width
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: MyInputField(
-                                            myController: CheckInPageTEC.checkInTimeController,
+                                            myController: CheckInPageTEC
+                                                .checkInTimeController,
                                             hint: "HH:MM",
                                             label: "وقت تسجيل الدخول",
                                           ),
@@ -149,24 +153,42 @@ class _CheckInPageState extends State<CheckInPage> {
                                                 });
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: CheckInPageTEC.isAM ? Colors.blueAccent : Colors.white,
-                                                foregroundColor: CheckInPageTEC.isAM ? Colors.white : Colors.grey[600],
+                                                backgroundColor:
+                                                    CheckInPageTEC.isAM
+                                                        ? Colors.blueAccent
+                                                        : Colors.white,
+                                                foregroundColor:
+                                                    CheckInPageTEC.isAM
+                                                        ? Colors.white
+                                                        : Colors.grey[600],
                                                 side: BorderSide(
-                                                  color: CheckInPageTEC.isAM ? Colors.blueAccent : Colors.grey[400]!,
-                                                  width: CheckInPageTEC.isAM ? 2 : 1,
+                                                  color: CheckInPageTEC.isAM
+                                                      ? Colors.blueAccent
+                                                      : Colors.grey[400]!,
+                                                  width: CheckInPageTEC.isAM
+                                                      ? 2
+                                                      : 1,
                                                 ),
-                                                elevation: CheckInPageTEC.isAM ? 4 : 1,
-                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                elevation:
+                                                    CheckInPageTEC.isAM ? 4 : 1,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 8),
                                                 minimumSize: const Size(60, 30),
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(8),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
                                                 ),
                                               ),
                                               child: Text(
-                                                'صباحاً', 
+                                                'صباحاً',
                                                 style: TextStyle(
                                                   fontSize: 12,
-                                                  fontWeight: CheckInPageTEC.isAM ? FontWeight.bold : FontWeight.normal,
+                                                  fontWeight:
+                                                      CheckInPageTEC.isAM
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
                                                 ),
                                               ),
                                             ),
@@ -178,24 +200,43 @@ class _CheckInPageState extends State<CheckInPage> {
                                                 });
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: !CheckInPageTEC.isAM ? Colors.blueAccent : Colors.white,
-                                                foregroundColor: !CheckInPageTEC.isAM ? Colors.white : Colors.grey[600],
+                                                backgroundColor:
+                                                    !CheckInPageTEC.isAM
+                                                        ? Colors.blueAccent
+                                                        : Colors.white,
+                                                foregroundColor:
+                                                    !CheckInPageTEC.isAM
+                                                        ? Colors.white
+                                                        : Colors.grey[600],
                                                 side: BorderSide(
-                                                  color: !CheckInPageTEC.isAM ? Colors.blueAccent : Colors.grey[400]!,
-                                                  width: !CheckInPageTEC.isAM ? 2 : 1,
+                                                  color: !CheckInPageTEC.isAM
+                                                      ? Colors.blueAccent
+                                                      : Colors.grey[400]!,
+                                                  width: !CheckInPageTEC.isAM
+                                                      ? 2
+                                                      : 1,
                                                 ),
-                                                elevation: !CheckInPageTEC.isAM ? 4 : 1,
-                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                elevation: !CheckInPageTEC.isAM
+                                                    ? 4
+                                                    : 1,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 8),
                                                 minimumSize: const Size(60, 30),
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(8),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
                                                 ),
                                               ),
                                               child: Text(
-                                                'مساءً', 
+                                                'مساءً',
                                                 style: TextStyle(
                                                   fontSize: 12,
-                                                  fontWeight: !CheckInPageTEC.isAM ? FontWeight.bold : FontWeight.normal,
+                                                  fontWeight:
+                                                      !CheckInPageTEC.isAM
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
                                                 ),
                                               ),
                                             ),

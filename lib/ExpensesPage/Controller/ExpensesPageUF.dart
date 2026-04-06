@@ -8,6 +8,7 @@ import '../../Core/View/PopUps/MySnackBar.dart';
 import 'NewExpenseTEC.dart';
 
 import '../../Core/Services/DebugLoggerService.dart';
+
 Future<bool> createExpense(BuildContext context) async {
   try {
     Expense e = Expense(
@@ -36,13 +37,17 @@ Future<void> deleteExpense(Expense e, BuildContext context) async {
     if (e.mDate.year == DateTime.now().year &&
         e.mDate.month == DateTime.now().month &&
         e.mDate.day == DateTime.now().day) {
+      if (!context.mounted) return;
       context.read<ClinicProvider>().updateDailyExpenses(-(e.mAmount ?? 0));
     } else {
+      if (!context.mounted) return;
       context.read<ClinicProvider>().updateMonthlyExpenses(-(e.mAmount ?? 0));
     }
+    if (!context.mounted) return;
     showMySnackBar(context, 'تم حذف المصروف بنجاح', Colors.green);
   } on Exception catch (e) {
     mDebug("Error deleting expense: $e");
+    if (!context.mounted) return;
     showMySnackBar(context, 'فشل حذف المصروف', Colors.red);
   }
 }

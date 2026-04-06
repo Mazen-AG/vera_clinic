@@ -8,7 +8,7 @@ class ClientConstantInfoProvider with ChangeNotifier {
       _mClientConstantInfoFirestoreMethods =
       ClientConstantInfoFirestoreMethods();
 
-  List<ClientConstantInfo?> _mCachedClientConstantInfo = [];
+  final List<ClientConstantInfo?> _mCachedClientConstantInfo = [];
 
   List<ClientConstantInfo?> get cachedClientConstantInfo =>
       _mCachedClientConstantInfo;

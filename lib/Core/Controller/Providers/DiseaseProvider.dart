@@ -9,7 +9,7 @@ class DiseaseProvider with ChangeNotifier {
       DiseaseFirestoreMethods();
 
   Disease? _mCurrentDisease;
-  List<Disease?> _mCachedDiseases = [];
+  final List<Disease?> _mCachedDiseases = [];
 
   Disease? get currentDisease => _mCurrentDisease;
   List<Disease?> get cachedDiseases => _mCachedDiseases;

@@ -64,6 +64,7 @@ class _MonthlyFollowUpsDetailsPageState
                 final item = cmfus[index]!;
                 return MonthlyFollowUpDetailsCard(
                   cmfu: item,
+                  client: widget.client,
                   index: index + 1,
                   onDeleted: () {
                     setState(() {

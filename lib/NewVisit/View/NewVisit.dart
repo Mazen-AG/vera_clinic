@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vera_clinic/Core/View/Reusable%20widgets/BackGround.dart';
 import 'package:vera_clinic/Core/View/Reusable%20widgets/MyInputField.dart';
 import 'package:vera_clinic/Core/View/Reusable%20widgets/my_app_bar.dart';
 import 'package:vera_clinic/NewVisit/Controller/NewVisitTEC.dart';
-import 'package:vera_clinic/NewVisit/View/UsedWidgets/AddAnotherVisitButton.dart';
-import 'package:vera_clinic/NewVisit/View/UsedWidgets/SaveVisitButton.dart';
-
+import '../../Core/Controller/Providers/ClientProvider.dart';
 import '../../Core/View/Reusable widgets/datePicker.dart';
 import '../../Core/View/Reusable widgets/myCard.dart';
+import 'UsedWidgets/AddAnotherVisitButton.dart';
+import 'UsedWidgets/SaveVisitButton.dart';
 
 class NewVisit extends StatefulWidget {
   const NewVisit({super.key});
@@ -20,7 +21,8 @@ class _NewVisitState extends State<NewVisit> {
   @override
   void initState() {
     super.initState();
-    NewVisitTEC.init();
+    final client = context.read<ClientProvider>().currentClient;
+    NewVisitTEC.init(clientHeight: client?.mHeight);
   }
 
   @override
@@ -94,14 +96,6 @@ class _NewVisitState extends State<NewVisit> {
                                           NewVisitTEC.visitWeightController,
                                       hint: 'أدخل الوزن (كجم)',
                                       label: 'الوزن'),
-                                ),
-                                const SizedBox(width: 40),
-                                Expanded(
-                                  child: MyInputField(
-                                      myController:
-                                          NewVisitTEC.visitBMIController,
-                                      hint: 'BMI ',
-                                      label: 'مؤشر كتلة الجسم'),
                                 ),
                               ],
                             ),

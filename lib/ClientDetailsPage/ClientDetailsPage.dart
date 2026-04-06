@@ -24,6 +24,7 @@ import 'InfoCards/medicalHistoryCard.dart';
 import 'InfoCards/personalInfoCard.dart';
 
 import '../Core/Services/DebugLoggerService.dart';
+
 class ClientDetailsPage extends StatefulWidget {
   final Client? client;
   const ClientDetailsPage({super.key, required this.client});
@@ -62,13 +63,14 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
   Future<void> _loadClientDetails() async {
     try {
       client = widget.client;
-      
+
       if (client == null) {
         errorMessage = 'العميل غير موجود';
         return;
       }
 
-      mDebug('Loading client details for: ${client!.mName} (ID: ${client!.mClientId})');
+      mDebug(
+          'Loading client details for: ${client!.mName} (ID: ${client!.mClientId})');
       mDebug('Disease ID: ${client!.mDiseaseId}');
       mDebug('Monthly FollowUp ID: ${client!.mClientLastMonthlyFollowUpId}');
       mDebug('Constant Info ID: ${client!.mClientConstantInfoId}');
@@ -81,67 +83,83 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
           myDisease = await context
               .read<DiseaseProvider>()
               .getDiseaseById(client!.mDiseaseId!);
-          mDebug('Disease loaded: ${myDisease != null ? "Success" : "Not found"}');
+          mDebug(
+              'Disease loaded: ${myDisease != null ? "Success" : "Not found"}');
         } catch (e) {
           mDebug('Error loading disease: $e');
         }
       }
 
       // Load monthly follow-up if ID is not empty
-      if (client!.mClientLastMonthlyFollowUpId != null && client!.mClientLastMonthlyFollowUpId!.isNotEmpty) {
+      if (client!.mClientLastMonthlyFollowUpId != null &&
+          client!.mClientLastMonthlyFollowUpId!.isNotEmpty) {
         try {
+          if (!mounted) return;
           myMonthlyFollowUp = await context
               .read<ClientMonthlyFollowUpProvider>()
-              .getClientMonthlyFollowUpById(client!.mClientLastMonthlyFollowUpId!);
-          mDebug('Monthly FollowUp loaded by ID: ${myMonthlyFollowUp != null ? "Success" : "Not found"}');
+              .getClientMonthlyFollowUpById(
+                  client!.mClientLastMonthlyFollowUpId!);
+          mDebug(
+              'Monthly FollowUp loaded by ID: ${myMonthlyFollowUp != null ? "Success" : "Not found"}');
         } catch (e) {
           mDebug('Error loading monthly follow-up by ID: $e');
         }
       }
-      
+
       // Fallback: If no monthly follow-up found by ID, try to get the latest one by client ID
       if (myMonthlyFollowUp == null) {
         try {
+          if (!mounted) return;
           myMonthlyFollowUp = await context
               .read<ClientMonthlyFollowUpProvider>()
               .getLatestClientMonthlyFollowUp(client!.mClientId);
-          mDebug('Monthly FollowUp loaded by client ID (fallback): ${myMonthlyFollowUp != null ? "Success" : "Not found"}');
+          mDebug(
+              'Monthly FollowUp loaded by client ID (fallback): ${myMonthlyFollowUp != null ? "Success" : "Not found"}');
         } catch (e) {
           mDebug('Error loading latest monthly follow-up by client ID: $e');
         }
       }
 
       // Load constant info if ID is not empty
-      if (client!.mClientConstantInfoId != null && client!.mClientConstantInfoId!.isNotEmpty) {
+      if (client!.mClientConstantInfoId != null &&
+          client!.mClientConstantInfoId!.isNotEmpty) {
         try {
+          if (!mounted) return;
           myConstantInfo = await context
               .read<ClientConstantInfoProvider>()
               .getClientConstantInfoById(client!.mClientConstantInfoId!);
-          mDebug('Constant Info loaded: ${myConstantInfo != null ? "Success" : "Not found"}');
+          mDebug(
+              'Constant Info loaded: ${myConstantInfo != null ? "Success" : "Not found"}');
         } catch (e) {
           mDebug('Error loading constant info: $e');
         }
       }
 
       // Load weight areas if ID is not empty
-      if (client!.mWeightAreasId != null && client!.mWeightAreasId!.isNotEmpty) {
+      if (client!.mWeightAreasId != null &&
+          client!.mWeightAreasId!.isNotEmpty) {
         try {
+          if (!mounted) return;
           myWeightAreas = await context
               .read<WeightAreasProvider>()
               .getWeightAreasById(client!.mWeightAreasId!);
-          mDebug('Weight Areas loaded: ${myWeightAreas != null ? "Success" : "Not found"}');
+          mDebug(
+              'Weight Areas loaded: ${myWeightAreas != null ? "Success" : "Not found"}');
         } catch (e) {
           mDebug('Error loading weight areas: $e');
         }
       }
 
       // Load preferred foods if ID is not empty
-      if (client!.mPreferredFoodsId != null && client!.mPreferredFoodsId!.isNotEmpty) {
+      if (client!.mPreferredFoodsId != null &&
+          client!.mPreferredFoodsId!.isNotEmpty) {
         try {
+          if (!mounted) return;
           myPreferredFoods = await context
               .read<PreferredFoodsProvider>()
               .getPreferredFoodsById(client!.mPreferredFoodsId!);
-          mDebug('Preferred Foods loaded: ${myPreferredFoods != null ? "Success" : "Not found"}');
+          mDebug(
+              'Preferred Foods loaded: ${myPreferredFoods != null ? "Success" : "Not found"}');
         } catch (e) {
           mDebug('Error loading preferred foods: $e');
         }
@@ -266,7 +284,8 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
                         personalInfoCard(
                             client, myConstantInfo?.mArea ?? 'مجهول'),
                         const SizedBox(height: 20),
-                        bodyMeasurementsCard(context, client, myMonthlyFollowUp),
+                        bodyMeasurementsCard(
+                            context, client, myMonthlyFollowUp),
                         const SizedBox(height: 20),
                         dietPreferencesCard(client?.mDiet ?? 'مجهول',
                             myPreferredFoods, myConstantInfo),

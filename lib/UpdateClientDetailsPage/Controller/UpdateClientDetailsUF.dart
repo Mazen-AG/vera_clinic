@@ -66,6 +66,10 @@ bool verifyFieldsDataTypeU(BuildContext context) {
       'controller': UpdateClientDetailsTEC.dailyCaloriesController,
       'message': 'السعرات الحرارية اليومية',
     },
+    {
+      'controller': UpdateClientDetailsTEC.muscleMassController,
+      'message': 'كتلة العضلات',
+    },
   ];
 
   for (var item in controllersWithMessages) {

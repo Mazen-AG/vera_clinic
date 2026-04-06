@@ -8,7 +8,7 @@ class ClientProvider with ChangeNotifier {
   final ClientFirestoreMethods _clientFirestoreMethods =
       ClientFirestoreMethods();
 
-  List<Client?> _cachedClients = []; // list of all fetched clients
+  final List<Client?> _cachedClients = []; // list of all fetched clients
   List<Client?> _searchResults = [];
   Client? _currentClient;
 

@@ -76,14 +76,6 @@ class _UpdateMonthlyFollowUpDetailsPageState extends State<UpdateMonthlyFollowUp
                                 Expanded(
                                   child: MyInputField(
                                       myController: UpdateMonthlyFollowUpDetailsTEC
-                                          .bmiController,
-                                      hint: 'BMI',
-                                      label: 'مؤشر كتلة الجسم'),
-                                ),
-                                const SizedBox(width: 40),
-                                Expanded(
-                                  child: MyInputField(
-                                      myController: UpdateMonthlyFollowUpDetailsTEC
                                           .muscleMassController,
                                       hint: 'كتلة العضلات',
                                       label: 'كتلة العضلات'),

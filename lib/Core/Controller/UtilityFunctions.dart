@@ -60,6 +60,27 @@ double normalizeToDecimals(num? value, int decimals) {
   return (v * factor).roundToDouble() / factor;
 }
 
+String getDisplayBMI(Client? client, double? bmi) {
+  if (bmi != null && bmi > 0) {
+    return formatOneDecimal(bmi);
+  }
+  if (client != null && client.mWeight != null && client.mWeight! > 0 && 
+      client.mHeight != null && client.mHeight! > 0) {
+    final heightInMeters = client.mHeight! / 100.0;
+    final calculatedBmi = client.mWeight! / (heightInMeters * heightInMeters);
+    return formatOneDecimal(calculatedBmi);
+  }
+  return '-';
+}
+
+String getDisplayValue(double? value, {String suffix = ''}) {
+  if (value != null && value > 0) {
+    // If it's a whole number like 10.0, formatOneDecimal shows 10.0
+    return formatOneDecimal(value) + (suffix.isNotEmpty ? ' $suffix' : '');
+  }
+  return '-';
+}
+
 bool isNumOnly(String? value) {
   if (value == null || value.isEmpty || value == '') return true;
   return double.tryParse(value) != null;
@@ -260,8 +281,9 @@ String formatTimeToArabic12Hour(DateTime dateTime) {
   int hour = dateTime.hour;
   String period = hour < 12 ? 'ص' : 'م';
   
-  if (hour == 0) hour = 12;
-  else if (hour > 12) hour = hour - 12;
+  if (hour == 0) {
+    hour = 12;
+  } else if (hour > 12) hour = hour - 12;
   
   String minute = dateTime.minute.toString().padLeft(2, '0');
   return '$hour:$minute $period';

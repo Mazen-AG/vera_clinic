@@ -16,10 +16,12 @@ class UpdateMonthlyFollowUpButton extends StatefulWidget {
   });
 
   @override
-  State<UpdateMonthlyFollowUpButton> createState() => _UpdateMonthlyFollowUpButtonState();
+  State<UpdateMonthlyFollowUpButton> createState() =>
+      _UpdateMonthlyFollowUpButtonState();
 }
 
-class _UpdateMonthlyFollowUpButtonState extends State<UpdateMonthlyFollowUpButton> {
+class _UpdateMonthlyFollowUpButtonState
+    extends State<UpdateMonthlyFollowUpButton> {
   bool _isLoading = false;
 
   @override
@@ -29,7 +31,8 @@ class _UpdateMonthlyFollowUpButtonState extends State<UpdateMonthlyFollowUpButto
         : _buildUpdateMonthlyFollowUpButton(context, widget.cmfu);
   }
 
-  Widget _buildUpdateMonthlyFollowUpButton(BuildContext context, ClientMonthlyFollowUp cmfu) {
+  Widget _buildUpdateMonthlyFollowUpButton(
+      BuildContext context, ClientMonthlyFollowUp cmfu) {
     return ElevatedButton.icon(
       label: const Text(
         "تعديل",
@@ -40,8 +43,7 @@ class _UpdateMonthlyFollowUpButtonState extends State<UpdateMonthlyFollowUpButto
       ),
       onPressed: () async {
         if (!verifyMonthlyFollowUpInput(
-            context,
-            UpdateMonthlyFollowUpDetailsTEC.dateController)) {
+            context, UpdateMonthlyFollowUpDetailsTEC.dateController)) {
           return;
         }
 
@@ -57,6 +59,7 @@ class _UpdateMonthlyFollowUpButtonState extends State<UpdateMonthlyFollowUpButto
 
         if (success) {
           widget.onMonthlyFollowUpUpdated();
+          if (!mounted) return;
           Navigator.pop(context);
         }
 

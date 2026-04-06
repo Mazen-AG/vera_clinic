@@ -11,6 +11,7 @@ import '../../../Core/View/PopUps/RequiredFieldSnackBar.dart';
 import 'SingleFollowUpTEC.dart';
 
 import '../../Core/Services/DebugLoggerService.dart';
+
 Future<bool> createSingleFollowUp(Client client, BuildContext context) async {
   try {
     final weightText =

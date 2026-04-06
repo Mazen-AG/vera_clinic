@@ -108,15 +108,16 @@ class _ExpensesPageState extends State<ExpensesPage> {
             const SizedBox(height: 16),
             widget.expenses.isEmpty
                 ? Padding(
-                  padding: const EdgeInsets.only(top: 30.0),
-                  child: const Center(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: const Center(
                       child: Text(
                         'لا توجد مصروفات',
-                        style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 26, fontWeight: FontWeight.bold),
                         textDirection: TextDirection.rtl,
                       ),
                     ),
-                )
+                  )
                 : const Expanded(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),

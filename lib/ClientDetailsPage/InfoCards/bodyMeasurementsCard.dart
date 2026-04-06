@@ -5,6 +5,7 @@ import 'package:vera_clinic/MonthlyFollowUpsDetailsPage/MonthlyFollowUpsDetailsP
 
 import '../../Core/Model/Classes/Client.dart';
 import '../../Core/Model/Classes/ClientMonthlyFollowUp.dart';
+import '../../Core/Controller/UtilityFunctions.dart';
 
 Widget bodyMeasurementsCard(
     BuildContext context, Client? client, ClientMonthlyFollowUp? monthlyFollowUp) {
@@ -30,10 +31,10 @@ Widget bodyMeasurementsCard(
                           title: 'الوزن', value: '${client?.mWeight ?? 0} كجم'),
                       MyTextBox(
                           title: '(BMI) مؤشر كتلة الجسم',
-                          value: '${monthlyFollowUp.mBMI ?? 0}'),
+                          value: getDisplayBMI(client, monthlyFollowUp.mBMI)),
                       MyTextBox(
                           title: 'كتلة العضلات',
-                          value: '${monthlyFollowUp.mMuscleMass ?? 0}'),
+                          value: getDisplayValue(monthlyFollowUp.mMuscleMass)),
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -45,10 +46,10 @@ Widget bodyMeasurementsCard(
                     children: [
                       MyTextBox(
                           title: '(BMR) معدل الحرق الأساسي',
-                          value: '${monthlyFollowUp.mBMR ?? 0}'),
+                          value: getDisplayValue(monthlyFollowUp.mBMR)),
                       MyTextBox(
                           title: '(PBF) نسبة الدهون في الجسم',
-                          value: '${monthlyFollowUp.mPBF ?? 0} %'),
+                          value: getDisplayValue(monthlyFollowUp.mPBF, suffix: '%')),
                       MyTextBox(
                           title: 'الماء',
                           value: monthlyFollowUp.mWater ?? ''),
@@ -63,10 +64,10 @@ Widget bodyMeasurementsCard(
                     children: [
                       MyTextBox(
                           title: 'الوزن الأقصى',
-                          value: '${monthlyFollowUp.mMaxWeight ?? 0} كجم'),
+                          value: getDisplayValue(monthlyFollowUp.mMaxWeight, suffix: 'كجم')),
                       MyTextBox(
                           title: 'الوزن المثالي',
-                          value: '${monthlyFollowUp.mOptimalWeight ?? 0} كجم'),
+                          value: getDisplayValue(monthlyFollowUp.mOptimalWeight, suffix: 'كجم')),
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -78,10 +79,10 @@ Widget bodyMeasurementsCard(
                     children: [
                       MyTextBox(
                           title: 'السعرات الحرارية اليومية',
-                          value: '${monthlyFollowUp.mDailyCalories ?? 0}'),
+                          value: getDisplayValue(monthlyFollowUp.mDailyCalories)),
                       MyTextBox(
                           title: 'السعرات الحرارية القصوى',
-                          value: '${monthlyFollowUp.mMaxCalories ?? 0}'),
+                          value: getDisplayValue(monthlyFollowUp.mMaxCalories)),
                     ],
                   ),
                   const SizedBox(height: 30),

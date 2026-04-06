@@ -38,6 +38,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
   Future<void> _loadData() async {
     try {
       await context.read<ClinicProvider>().getClinic();
+      if (!mounted) return;
       await context.read<ExpenseProvider>().getAllExpenses();
     } catch (e) {
       mDebug('Error loading data: $e');

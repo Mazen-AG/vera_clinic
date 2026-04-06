@@ -73,6 +73,7 @@ class ClientRegistrationTEC {
   static late TextEditingController backController;
 
   // Client Monthly Follow-Up Controllers
+  static late TextEditingController bmiController;
   static late TextEditingController pbfController;
   static late TextEditingController waterController;
   static late TextEditingController maxWeightController;
@@ -141,6 +142,7 @@ class ClientRegistrationTEC {
     backController = TextEditingController();
 
     // Client Monthly Follow-Up Controllers
+    bmiController = TextEditingController();
     pbfController = TextEditingController();
     waterController = TextEditingController();
     maxWeightController = TextEditingController();
@@ -149,6 +151,25 @@ class ClientRegistrationTEC {
     maxCaloriesController = TextEditingController();
     dailyCaloriesController = TextEditingController();
     muscleMassController = TextEditingController();
+
+    // Add listeners for automatic BMI calculation
+    heightController.addListener(_updateBMI);
+    weightController.addListener(_updateBMI);
+  }
+
+  static void _updateBMI() {
+    final heightText = heightController.text;
+    final weightText = weightController.text;
+
+    final height = double.tryParse(heightText);
+    final weight = double.tryParse(weightText);
+
+    if (height != null && weight != null && height > 0) {
+      final bmi = weight / ((height / 100) * (height / 100));
+      bmiController.text = bmi.toStringAsFixed(1);
+    } else {
+      bmiController.text = '';
+    }
   }
 
   static void clear() {
@@ -212,6 +233,7 @@ class ClientRegistrationTEC {
     backController.clear();
 
     // Client Monthly Follow-Up Controllers
+    bmiController.clear();
     pbfController.clear();
     waterController.clear();
     maxWeightController.clear();
@@ -220,6 +242,7 @@ class ClientRegistrationTEC {
     maxCaloriesController.clear();
     dailyCaloriesController.clear();
     muscleMassController.clear();
+    bmiController.clear();
   }
 
   static void dispose() {
@@ -283,6 +306,7 @@ class ClientRegistrationTEC {
     backController.dispose();
 
     // Client Monthly Follow-Up Controllers
+    bmiController.dispose();
     pbfController.dispose();
     waterController.dispose();
     maxWeightController.dispose();

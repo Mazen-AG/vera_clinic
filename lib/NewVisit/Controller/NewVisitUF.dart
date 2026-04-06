@@ -12,14 +12,20 @@ import '../../Core/View/PopUps/RequiredFieldSnackBar.dart';
 import '../../Core/Services/DebugLoggerService.dart';
 Future<bool> createVisit(BuildContext context) async {
   try {
+    double weight = double.tryParse(NewVisitTEC.visitWeightController.text) ?? 0.0;
+    double bmi = 0.0;
+    if (weight > 0 && NewVisitTEC.clientHeight != null && NewVisitTEC.clientHeight! > 0) {
+      bmi = normalizeBmi(weight / ((NewVisitTEC.clientHeight! / 100) * (NewVisitTEC.clientHeight! / 100)));
+    }
+
     Visit v = Visit(
       visitId: '',
       clientId: '',
       date: DateTime.tryParse(NewVisitTEC.visitDateController.text) ??
           DateTime.now(),
       diet: NewVisitTEC.visitDietController.text,
-      weight: double.tryParse(NewVisitTEC.visitWeightController.text) ?? 0.0,
-      bmi: double.tryParse(NewVisitTEC.visitBMIController.text) ?? 0.0,
+      weight: weight,
+      bmi: bmi,
       visitNotes: NewVisitTEC.visitNotesController.text,
     );
 
@@ -35,15 +41,9 @@ Future<bool> createVisit(BuildContext context) async {
 
 bool verifyVisitInput(
     BuildContext context,
-    TextEditingController bmiController,
     TextEditingController weightController,
     TextEditingController dateController) {
   bool isValid = true;
-
-  if (!isNumOnly(bmiController.text)) {
-    showInvalidDataTypeSnackBar(context, 'مؤشر كتلة الجسم');
-    isValid = false;
-  }
   if (!isNumOnly(weightController.text)) {
     showInvalidDataTypeSnackBar(context, 'الوزن');
     isValid = false;

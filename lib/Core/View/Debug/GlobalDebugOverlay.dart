@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import '../../Services/DebugLoggerService.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class GlobalDebugOverlay extends StatefulWidget {
   final Widget child;
@@ -23,11 +24,13 @@ class _GlobalDebugOverlayState extends State<GlobalDebugOverlay> {
   Timer? _refreshTimer;
   Timer? _statusTimer;
   String? _statusMessage;
+  String _appVersion = 'Loading...';
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    _loadPackageInfo();
     // Initialize the debug logger
     DebugLoggerService.instance.initialize();
     
@@ -37,6 +40,15 @@ class _GlobalDebugOverlayState extends State<GlobalDebugOverlay> {
         if (mounted && _showDebugPanel) {
           setState(() {});
         }
+      });
+    }
+  }
+
+  Future<void> _loadPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _appVersion = '${info.version}+${info.buildNumber}';
       });
     }
   }
@@ -212,38 +224,52 @@ class _GlobalDebugOverlayState extends State<GlobalDebugOverlay> {
                 bottom: BorderSide(color: Colors.grey[700]!),
               ),
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(
-                  Icons.bug_report,
-                  color: Colors.greenAccent,
-                  size: 20,
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.bug_report,
+                      color: Colors.greenAccent,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Debug Logs',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '${logs.length} entries',
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline, color: Colors.white70, size: 20),
+                      onPressed: _clearLogs,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white70, size: 20),
+                      onPressed: _toggleDebugPanel,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                const Text(
-                  'Debug Logs',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
                 Text(
-                  '${logs.length} entries',
+                  'v$_appVersion',
                   style: TextStyle(
-                    color: Colors.grey[400],
+                    color: Colors.grey[500],
                     fontSize: 12,
+                    fontWeight: FontWeight.w600,
                   ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.white70, size: 20),
-                  onPressed: _clearLogs,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white70, size: 20),
-                  onPressed: _toggleDebugPanel,
+                  textAlign: TextAlign.start,
                 ),
               ],
             ),

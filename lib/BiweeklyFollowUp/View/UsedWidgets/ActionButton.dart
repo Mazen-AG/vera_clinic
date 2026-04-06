@@ -29,39 +29,15 @@ class _ActionButtonState extends State<ActionButton> {
                 icon: const Icon(Icons.check, color: Colors.white),
                 label: const Text('حفظ',
                     style: TextStyle(fontSize: 16, color: Colors.white)),
-                onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-
-                  try {
-                    if (!verifyBiweeklyRequiredFields(context) ||
-                        !verifyBiweeklyFieldsDataType(context)) {
-                      return;
-                    }
-
-                    bool success = await createBiweeklyFollowUp(
-                        widget.client, widget.cmfu, context);
-
-                    showMySnackBar(
-                      context,
-                      success
-                          ? 'تم تسجيل المتابعة بنجاح'
-                          : 'فشل تسجيل المتابعة',
-                      success ? Colors.green : Colors.red,
-                    );
-                    if (success) {
-                      Navigator.pop(context);
-                    }
-                  } finally {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  }
-                },
+                onPressed: _handleSave,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,
                   foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                 ),
               ),
         const SizedBox(width: 20),
@@ -72,11 +48,45 @@ class _ActionButtonState extends State<ActionButton> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
           ),
           icon: const Icon(Icons.clear),
           label: const Text('مسح'),
         ),
       ],
     );
+  }
+
+  Future<void> _handleSave() async {
+    setState(() => _isLoading = true);
+
+    try {
+      if (!verifyBiweeklyRequiredFields(context) ||
+          !verifyBiweeklyFieldsDataType(context)) {
+        return;
+      }
+
+      bool success = await createBiweeklyFollowUp(
+          widget.client, widget.cmfu, context);
+
+      if (!mounted) return;
+
+      showMySnackBar(
+        context,
+        success ? 'تم تسجيل المتابعة بنجاح' : 'فشل تسجيل المتابعة',
+        success ? Colors.green : Colors.red,
+      );
+      if (success) {
+        Navigator.pop(context);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 }

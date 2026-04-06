@@ -47,6 +47,7 @@ class _VisitCardState extends State<VisitCard> {
                         await context
                             .read<VisitProvider>()
                             .deleteVisit(widget.visit.mVisitId);
+                        if (!mounted) return;
                         Navigator.pop(context);
                         widget.onVisitDeleted!();
                       },

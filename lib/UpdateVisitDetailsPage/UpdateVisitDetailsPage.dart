@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vera_clinic/Core/Model/Classes/Visit.dart';
 import 'package:vera_clinic/Core/View/Reusable%20widgets/my_app_bar.dart';
 import 'package:vera_clinic/UpdateVisitDetailsPage/Controller/UpdateVisitDetailsTEC.dart';
+import '../Core/Controller/Providers/ClientProvider.dart';
 
 import '../Core/View/Reusable widgets/BackGround.dart';
 import '../Core/View/Reusable widgets/MyInputField.dart';
@@ -23,7 +25,8 @@ class _UpdateVisitDetailsPageState extends State<UpdateVisitDetailsPage> {
   @override
   void initState() {
     super.initState();
-    UpdateVisitDetailsTEC.init(widget.visit);
+    final client = context.read<ClientProvider>().currentClient;
+    UpdateVisitDetailsTEC.init(widget.visit, clientHeight: client?.mHeight);
   }
 
   @override
@@ -87,14 +90,6 @@ class _UpdateVisitDetailsPageState extends State<UpdateVisitDetailsPage> {
                                           .visitWeightController,
                                       hint: 'أدخل الوزن (كجم)',
                                       label: 'الوزن'),
-                                ),
-                                const SizedBox(width: 40),
-                                Expanded(
-                                  child: MyInputField(
-                                      myController: UpdateVisitDetailsTEC
-                                          .visitBMIController,
-                                      hint: 'BMI ',
-                                      label: 'مؤشر كتلة الجسم'),
                                 ),
                               ],
                             ),

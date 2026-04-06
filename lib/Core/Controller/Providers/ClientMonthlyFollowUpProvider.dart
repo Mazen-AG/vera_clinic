@@ -9,7 +9,7 @@ class ClientMonthlyFollowUpProvider with ChangeNotifier {
       ClientMonthlyFollowUpFirestoreMethods();
 
   ClientMonthlyFollowUp? _mCurrentClientMonthlyFollowUp;
-  List<ClientMonthlyFollowUp> _mCachedClientsMonthlyFollowUps = [];
+  final List<ClientMonthlyFollowUp> _mCachedClientsMonthlyFollowUps = [];
 
   ClientMonthlyFollowUp? get currentClientMonthlyFollowUp =>
       _mCurrentClientMonthlyFollowUp;

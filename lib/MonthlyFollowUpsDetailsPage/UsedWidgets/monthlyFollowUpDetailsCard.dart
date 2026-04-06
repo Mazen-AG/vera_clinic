@@ -8,24 +8,29 @@ import 'package:vera_clinic/Core/View/PopUps/MyAlertDialogue.dart';
 import 'package:vera_clinic/Core/Controller/UtilityFunctions.dart';
 import 'package:vera_clinic/UpdateMonthlyFollowUpDetailsPage/UpdateMonthlyFollowUpDetailsPage.dart';
 
+import 'package:vera_clinic/Core/Model/Classes/Client.dart';
+
 class MonthlyFollowUpDetailsCard extends StatefulWidget {
   final ClientMonthlyFollowUp cmfu;
+  final Client? client;
   final int index;
   final VoidCallback? onDeleted;
 
   const MonthlyFollowUpDetailsCard({
     super.key,
     required this.cmfu,
+    this.client,
     required this.index,
     this.onDeleted,
   });
 
   @override
-  State<MonthlyFollowUpDetailsCard> createState() => _MonthlyFollowUpDetailsCardState();
+  State<MonthlyFollowUpDetailsCard> createState() =>
+      _MonthlyFollowUpDetailsCardState();
 }
 
-class _MonthlyFollowUpDetailsCardState extends State<MonthlyFollowUpDetailsCard> {
-
+class _MonthlyFollowUpDetailsCardState
+    extends State<MonthlyFollowUpDetailsCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -48,7 +53,9 @@ class _MonthlyFollowUpDetailsCardState extends State<MonthlyFollowUpDetailsCard>
                       onPressed: () async {
                         await context
                             .read<ClientMonthlyFollowUpProvider>()
-                            .deleteClientMonthlyFollowUp(widget.cmfu.mClientMonthlyFollowUpId);
+                            .deleteClientMonthlyFollowUp(
+                                widget.cmfu.mClientMonthlyFollowUpId);
+                        if (!mounted) return;
                         Navigator.pop(context);
                         widget.onDeleted!();
                       },
@@ -71,7 +78,8 @@ class _MonthlyFollowUpDetailsCardState extends State<MonthlyFollowUpDetailsCard>
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => UpdateMonthlyFollowUpDetailsPage(
+                            builder: (context) =>
+                                UpdateMonthlyFollowUpDetailsPage(
                               cmfu: widget.cmfu,
                               onMonthlyFollowUpUpdated: () {
                                 setState(() {});
@@ -97,7 +105,8 @@ class _MonthlyFollowUpDetailsCardState extends State<MonthlyFollowUpDetailsCard>
                       runSpacing: 20,
                       children: [
                         MyTextBox(
-                            title: 'التاريخ', value: getDateText(widget.cmfu.mDate)),
+                            title: 'التاريخ',
+                            value: getDateText(widget.cmfu.mDate)),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -110,11 +119,13 @@ class _MonthlyFollowUpDetailsCardState extends State<MonthlyFollowUpDetailsCard>
                       children: [
                         MyTextBox(
                             title: '(BMI) مؤشر كتلة الجسم',
-                            value: widget.cmfu.mBMI?.toString() ?? '0'),
-                        MyTextBox(title: 'الماء', value: widget.cmfu.mWater ?? ''),
+                            value:
+                                getDisplayBMI(widget.client, widget.cmfu.mBMI)),
+                        MyTextBox(
+                            title: 'الماء', value: widget.cmfu.mWater ?? ''),
                         MyTextBox(
                             title: 'كتلة العضلات',
-                            value: widget.cmfu.mMuscleMass?.toString() ?? '0'),
+                            value: getDisplayValue(widget.cmfu.mMuscleMass)),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -127,10 +138,11 @@ class _MonthlyFollowUpDetailsCardState extends State<MonthlyFollowUpDetailsCard>
                       children: [
                         MyTextBox(
                             title: '(PBF) نسبة الدهون ',
-                            value: widget.cmfu.mPBF?.toString() ?? '0'),
+                            value:
+                                getDisplayValue(widget.cmfu.mPBF, suffix: '%')),
                         MyTextBox(
                             title: '(BMR) معدل الحرق الأساسي',
-                            value: widget.cmfu.mBMR?.toString() ?? '0'),
+                            value: getDisplayValue(widget.cmfu.mBMR)),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -143,32 +155,34 @@ class _MonthlyFollowUpDetailsCardState extends State<MonthlyFollowUpDetailsCard>
                       children: [
                         MyTextBox(
                             title: 'الوزن الأقصى (كجم)',
-                            value: widget.cmfu.mMaxWeight?.toString() ?? '0'),
+                            value: getDisplayValue(widget.cmfu.mMaxWeight,
+                                suffix: 'كجم')),
                         MyTextBox(
                             title: 'الوزن المثالي (كجم)',
-                            value: widget.cmfu.mOptimalWeight?.toString() ?? '0'),
+                            value: getDisplayValue(widget.cmfu.mOptimalWeight,
+                                suffix: 'كجم')),
                         MyTextBox(
                             title: 'السعرات القصوى',
-                            value: widget.cmfu.mMaxCalories?.toString() ?? '0'),
+                            value: getDisplayValue(widget.cmfu.mMaxCalories)),
                         MyTextBox(
                             title: 'السعرات اليومية',
-                            value: widget.cmfu.mDailyCalories?.toString() ?? '0'),
+                            value: getDisplayValue(widget.cmfu.mDailyCalories)),
                       ],
                     ),
                     const SizedBox(height: 10),
                     // Notes section
-                      Wrap(
-                        textDirection: TextDirection.rtl,
-                        alignment: WrapAlignment.end,
-                        spacing: 70,
-                        runSpacing: 20,
-                        children: [
-                          MyTextBox(
-                            title: 'ملاحظات',
-                            value: widget.cmfu.mNotes ?? '',
-                          ),
-                        ],
-                      ),
+                    Wrap(
+                      textDirection: TextDirection.rtl,
+                      alignment: WrapAlignment.end,
+                      spacing: 70,
+                      runSpacing: 20,
+                      children: [
+                        MyTextBox(
+                          title: 'ملاحظات',
+                          value: widget.cmfu.mNotes ?? '',
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

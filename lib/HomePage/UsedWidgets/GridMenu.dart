@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:vera_clinic/CheckedInClientsPage/CheckedInClientsPage.dart';
 import 'package:vera_clinic/Core/Controller/Providers/ClinicProvider.dart';
@@ -96,7 +95,9 @@ class _GridMenuState extends State<GridMenu> {
                     onPressed: () async {
                       await context.read<ClinicProvider>().dailyClear();
                       if (isLastWednesdayOfMonth(DateTime.now())) {
+                        if (!mounted) return;
                         await context.read<ClinicProvider>().monthlyClear();
+                        if (!mounted) return;
                         await context
                             .read<ExpenseProvider>()
                             .monthlyClearExpenses();
@@ -120,10 +121,10 @@ class _GridMenuState extends State<GridMenu> {
         ),
         menuCard('متابعة', Icons.calendar_today, Colors.purple, () {
           Navigator.push(
-            context,
-            MaterialPageRoute(
+              context,
+              MaterialPageRoute(
                 builder: (context) => CheckedInClientsPage(),
-          ));
+              ));
         }),
       ],
     );

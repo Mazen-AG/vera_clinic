@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../../Core/Services/DebugLoggerService.dart';
 class Visit {
@@ -40,8 +39,8 @@ class Visit {
       clientId: data['clientId'] as String?,
       date: (data['date'] as Timestamp).toDate(),
       diet: data['diet'] as String? ?? '',
-      weight: data['weight'] as double? ?? 0.0,
-      bmi: data['bmi'] as double? ?? 0.0,
+      weight: (data['weight'] as num?)?.toDouble() ?? 0.0,
+      bmi: (data['bmi'] as num?)?.toDouble() ?? 0.0,
       visitNotes: data['visitNotes'] as String? ?? '',
     );
   }

@@ -25,17 +25,14 @@ import 'ClientRegistrationTEC.dart';
 import '../../Core/Services/DebugLoggerService.dart';
 Future<bool> checkInNewClient(BuildContext context, Client c) async {
   try {
+    final clinicProvider = context.read<ClinicProvider>();
     // Check if the client is already checked in
-    if (context
-        .read<ClinicProvider>()
-        .checkedInClients
+    if (clinicProvider.checkedInClients
         .any((client) => client.mClientId == c.mClientId)) {
       showMySnackBar(context, 'هذا العميل مسجل مسبقًا', Colors.red);
       return false;
     }
-    await context
-        .read<ClinicProvider>()
-        .checkInClient(c, DateTime.now().toIso8601String());
+    await clinicProvider.checkInClient(c, DateTime.now().toIso8601String());
     return true;
   } on Exception catch (e) {
     mDebug('Error checking in new client: $e');
@@ -45,9 +42,16 @@ Future<bool> checkInNewClient(BuildContext context, Client c) async {
 
 Future<Map<bool, Client?>> createClient(BuildContext context) async {
   try {
-    if (await context
-        .read<ClientProvider>()
-        .isPhoneNumUsed(ClientRegistrationTEC.phoneController.text)) {
+    final clientProvider = context.read<ClientProvider>();
+    final constantInfoProvider = context.read<ClientConstantInfoProvider>();
+    final diseaseProvider = context.read<DiseaseProvider>();
+    final cmfuProvider = context.read<ClientMonthlyFollowUpProvider>();
+    final preferredFoodsProvider = context.read<PreferredFoodsProvider>();
+    final weightAreasProvider = context.read<WeightAreasProvider>();
+    final visitProvider = context.read<VisitProvider>();
+
+    if (await clientProvider.isPhoneNumUsed(ClientRegistrationTEC.phoneController.text)) {
+      if (!context.mounted) return {false: null};
       showMySnackBar(context, 'هذا الرقم مستخدم بالفعل', Colors.red);
       return {false: null};
     }
@@ -83,39 +87,33 @@ Future<Map<bool, Client?>> createClient(BuildContext context) async {
         preferredFoodsId: '',
         weightAreasId: '');
 
-    await context
-        .read<ClientProvider>()
-        .createClient(c); // client ID is generated here
+    await clientProvider.createClient(c); // client ID is generated here
 
     c.mClientConstantInfoId =
-        await createClientConstantInfo(c.mClientId, context) ?? '';
-    c.mDiseaseId = await createDisease(c.mClientId, context) ?? '';
-    final CmfuId = await createClientMonthlyFollowUp(c, context) ?? '';
-    c.mClientLastMonthlyFollowUpId = CmfuId.isNotEmpty ? CmfuId : '';
+        await createClientConstantInfo(c.mClientId, constantInfoProvider) ?? '';
+    c.mDiseaseId = await createDisease(c.mClientId, diseaseProvider) ?? '';
+    final cmfuId = await createClientMonthlyFollowUp(c, cmfuProvider) ?? '';
+    c.mClientLastMonthlyFollowUpId = cmfuId.isNotEmpty ? cmfuId : '';
     c.mPreferredFoodsId =
-        await createPreferredFoods(c.mClientId, context) ?? '';
-    c.mWeightAreasId = await createWeightAreas(c.mClientId, context) ?? '';
+        await createPreferredFoods(c.mClientId, preferredFoodsProvider) ?? '';
+    c.mWeightAreasId = await createWeightAreas(c.mClientId, weightAreasProvider) ?? '';
 
     if (NewVisitTEC.clientVisits.isNotEmpty) {
       c.mLastVisitId = getLatestVisitId();
       for (Visit v in NewVisitTEC.clientVisits) {
         v.mClientId = c.mClientId;
-        if (double.tryParse(NewVisitTEC.visitBMIController.text) != null) {
-          v.mBMI = normalizeBmi(double.parse(NewVisitTEC.visitBMIController.text));
-        } else if (c.mHeight != null && c.mHeight! > 0) {
+        if (c.mHeight != null && c.mHeight! > 0 && v.mWeight > 0) {
           v.mBMI = normalizeBmi(v.mWeight / ((c.mHeight! / 100) * (c.mHeight! / 100)));
         } else {
           v.mBMI = 0.0;
         }
-        await context.read<VisitProvider>().updateVisit(v);
+        await visitProvider.updateVisit(v);
       }
     }
     // c.lastVisitId = getLatestVisitId() ?? '';
 
     // only after you add all extra IDs to the client object
-    await context
-        .read<ClientProvider>()
-        .updateClient(c); // Update the client with new IDs
+    await clientProvider.updateClient(c); // Update the client with new IDs
     c.printClientInfo();
     return {true: c};
   } catch (e) {
@@ -124,7 +122,7 @@ Future<Map<bool, Client?>> createClient(BuildContext context) async {
   }
 }
 
-Future<String?> createDisease(String clientId, BuildContext context) async {
+Future<String?> createDisease(String clientId, DiseaseProvider provider) async {
   try {
     Disease d = Disease(
       diseaseId: '',
@@ -166,7 +164,7 @@ Future<String?> createDisease(String clientId, BuildContext context) async {
       hormonal: ClientRegistrationTEC.hormonalController.text,
     );
 
-    await context.read<DiseaseProvider>().createDisease(d);
+    await provider.createDisease(d);
     d.printDisease();
 
     return d.mDiseaseId;
@@ -177,14 +175,11 @@ Future<String?> createDisease(String clientId, BuildContext context) async {
 }
 
 Future<String?> createClientMonthlyFollowUp(
-    Client client, BuildContext context) async {
+    Client client, ClientMonthlyFollowUpProvider provider) async {
   try {
     double bmi = 0.0;
-    if (client.mHeight != null &&
-        client.mWeight != null &&
-        client.mHeight! > 0) {
-      bmi = normalizeBmi(
-          client.mWeight! / ((client.mHeight! / 100) * (client.mHeight! / 100)));
+    if (client.mHeight != null && client.mWeight != null && client.mHeight! > 0) {
+      bmi = normalizeBmi(client.mWeight! / ((client.mHeight! / 100) * (client.mHeight! / 100)));
     }
     ClientMonthlyFollowUp cmfu = ClientMonthlyFollowUp(
       clientId: client.mClientId,
@@ -211,9 +206,7 @@ Future<String?> createClientMonthlyFollowUp(
       notes: '',
     );
 
-    await context
-        .read<ClientMonthlyFollowUpProvider>()
-        .createClientMonthlyFollowUp(cmfu);
+    await provider.createClientMonthlyFollowUp(cmfu);
     cmfu.printClientMonthlyFollowUp();
 
     return cmfu.mClientMonthlyFollowUpId;
@@ -224,7 +217,7 @@ Future<String?> createClientMonthlyFollowUp(
 }
 
 Future<String?> createClientConstantInfo(
-    String clientId, BuildContext context) async {
+    String clientId, ClientConstantInfoProvider provider) async {
   try {
     ClientConstantInfo cci = ClientConstantInfo(
       clientId: clientId,
@@ -237,9 +230,7 @@ Future<String?> createClientConstantInfo(
           ClientRegistrationTEC.sportsController.text.toLowerCase() == 'true',
     );
 
-    await context
-        .read<ClientConstantInfoProvider>()
-        .createClientConstantInfo(cci);
+    await provider.createClientConstantInfo(cci);
     cci.printClientConstantInfo();
 
     return cci.mClientConstantInfoId;
@@ -250,7 +241,7 @@ Future<String?> createClientConstantInfo(
 }
 
 Future<String?> createPreferredFoods(
-    String clientId, BuildContext context) async {
+    String clientId, PreferredFoodsProvider provider) async {
   try {
     PreferredFoods pf = PreferredFoods(
       preferredFoodsId: '',
@@ -267,7 +258,7 @@ Future<String?> createPreferredFoods(
       others: ClientRegistrationTEC.otherPreferredFoodsController.text,
     );
 
-    await context.read<PreferredFoodsProvider>().createPreferredFoods(pf);
+    await provider.createPreferredFoods(pf);
     pf.printPreferredFoods();
 
     return pf.mPreferredFoodsId;
@@ -277,7 +268,7 @@ Future<String?> createPreferredFoods(
   }
 }
 
-Future<String?> createWeightAreas(String clientId, BuildContext context) async {
+Future<String?> createWeightAreas(String clientId, WeightAreasProvider provider) async {
   try {
     WeightAreas wa = WeightAreas(
       weightAreasId: '',
@@ -295,7 +286,7 @@ Future<String?> createWeightAreas(String clientId, BuildContext context) async {
       back: ClientRegistrationTEC.backController.text.toLowerCase() == 'true',
     );
 
-    await context.read<WeightAreasProvider>().createWeightAreas(wa);
+    await provider.createWeightAreas(wa);
     wa.printWeightAreas();
 
     return wa.mWeightAreasId;

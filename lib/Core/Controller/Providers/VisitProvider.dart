@@ -8,7 +8,7 @@ class VisitProvider with ChangeNotifier {
   final VisitFirestoreMethods _visitFirestoreMethods = VisitFirestoreMethods();
 
   Visit? _currentVisit;
-  List<Visit?> _mCachedVisits = [];
+  final List<Visit?> _mCachedVisits = [];
   // List<Visit?> _mCurrentClientVisits = [];
 
   Visit? get currentVisit => _currentVisit;

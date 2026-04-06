@@ -7,15 +7,17 @@ class NewVisitTEC{
   static late TextEditingController visitDateController;
   static late TextEditingController visitDietController;
   static late TextEditingController visitWeightController;
-  static late TextEditingController visitBMIController;
   static late TextEditingController visitNotesController;
   static List<Visit> clientVisits = [];
 
-  static void init() {
+  static double? _clientHeight;
+  static double? get clientHeight => _clientHeight;
+
+  static void init({double? clientHeight}) {
+    _clientHeight = clientHeight;
     visitDateController = TextEditingController();
     visitDietController = TextEditingController();
     visitWeightController = TextEditingController();
-    visitBMIController = TextEditingController();
     visitNotesController = TextEditingController();
   }
 
@@ -23,7 +25,6 @@ class NewVisitTEC{
     visitDateController.clear();
     visitDietController.clear();
     visitWeightController.clear();
-    visitBMIController.clear();
     visitNotesController.clear();
   }
 
@@ -31,7 +32,6 @@ class NewVisitTEC{
     visitDateController.dispose();
     visitDietController.dispose();
     visitWeightController.dispose();
-    visitBMIController.dispose();
     visitNotesController.dispose();
   }
 }

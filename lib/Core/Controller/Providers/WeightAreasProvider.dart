@@ -8,7 +8,7 @@ class WeightAreasProvider with ChangeNotifier {
       WeightAreasFirestoreMethods();
 
   WeightAreas? _currentWeightAreas;
-  List<WeightAreas?> _cachedWeightAreas = [];
+  final List<WeightAreas?> _cachedWeightAreas = [];
 
   WeightAreas? get currentWeightAreas => _currentWeightAreas;
   List<WeightAreas?> get cachedWeightAreas => _cachedWeightAreas;

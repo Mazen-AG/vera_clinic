@@ -33,18 +33,25 @@ class ClientSearchResultCard extends StatefulWidget {
 class _ClientSearchResultCardState extends State<ClientSearchResultCard> {
   _deleteClient(Client c) async {
     await context.read<ClinicProvider>().checkOutClient(c);
+    if (!mounted) return;
     await context.read<ClientProvider>().deleteClient(c.mClientId);
+    if (!mounted) return;
     await context
         .read<ClientConstantInfoProvider>()
         .deleteClientConstantInfo(c.mClientConstantInfoId ?? '');
+    if (!mounted) return;
     await context
         .read<ClientMonthlyFollowUpProvider>()
         .deleteAllClientMonthlyFollowUps(c.mClientId);
+    if (!mounted) return;
     await context.read<DiseaseProvider>().deleteDisease(c.mDiseaseId ?? '');
+    if (!mounted) return;
     await context
         .read<PreferredFoodsProvider>()
         .deletePreferredFoods(c.mPreferredFoodsId ?? '');
+    if (!mounted) return;
     await context.read<VisitProvider>().deleteAllClientVisits(c.mClientId);
+    if (!mounted) return;
     await context
         .read<WeightAreasProvider>()
         .deleteWeightAreas(c.mWeightAreasId ?? '');
@@ -86,6 +93,7 @@ class _ClientSearchResultCardState extends State<ClientSearchResultCard> {
                           returnText: "رجوع",
                           onPressed: () async {
                             await _deleteClient(client!);
+                            if (!mounted) return;
                             Navigator.pop(context);
                             widget.searchResults.removeAt(index);
                             widget.onClientDeleted();

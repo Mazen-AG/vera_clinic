@@ -43,8 +43,11 @@ class CheckInService {
     final checkInTimeISO = checkInDateTime.toIso8601String();
 
     await context.read<ClinicProvider>().checkInClient(client, checkInTimeISO);
+    if (!context.mounted) return;
     await context.read<ClinicProvider>().incrementDailyPatients();
+    if (!context.mounted) return;
     await context.read<ClinicProvider>().updateDailyIncome(subscriptionPrice);
+    if (!context.mounted) return;
     await context.read<ClientProvider>().updateClient(client);
 
     if (!context.mounted) return;
@@ -76,7 +79,8 @@ class CheckInService {
     }
 
     // Import the SubscriptionDialogService
-    final Map<String, dynamic>? dialogResult = await SubscriptionDialogService.showSubscriptionDialog(
+    final Map<String, dynamic>? dialogResult =
+        await SubscriptionDialogService.showSubscriptionDialog(
       context: context,
       subscriptionPriceController: subscriptionPriceController,
       subscriptionTypeController: subscriptionTypeController,
@@ -95,6 +99,7 @@ class CheckInService {
 
     onCheckedInChanged(true);
     try {
+      if (!context.mounted) return;
       final Map<bool, Client?> result = await createClient(context);
       final bool success = result.keys.first;
       final Client? client = result.values.last;

@@ -32,7 +32,6 @@ Future<bool> updateMonthlyFollowUp(BuildContext context, ClientMonthlyFollowUp c
     
     // Update all fields
     cmfu.mWater = UpdateMonthlyFollowUpDetailsTEC.waterController.text;
-    cmfu.mBMI = double.tryParse(UpdateMonthlyFollowUpDetailsTEC.bmiController.text) ?? 0.0;
     cmfu.mMuscleMass = double.tryParse(UpdateMonthlyFollowUpDetailsTEC.muscleMassController.text) ?? 0.0;
     cmfu.mPBF = double.tryParse(UpdateMonthlyFollowUpDetailsTEC.pbfController.text) ?? 0.0;
     cmfu.mBMR = double.tryParse(UpdateMonthlyFollowUpDetailsTEC.bmrController.text) ?? 0.0;

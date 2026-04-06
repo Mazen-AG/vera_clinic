@@ -27,6 +27,7 @@ Future showAlertDialogue({
           TextButton(
             onPressed: () async {
               await onPressed();
+              if (!context.mounted) return;
               Navigator.of(context).pop();
             },
             child: Text(buttonText,

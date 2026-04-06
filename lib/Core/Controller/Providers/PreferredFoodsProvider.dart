@@ -9,7 +9,7 @@ class PreferredFoodsProvider with ChangeNotifier {
       PreferredFoodsFirestoreMethods();
 
   PreferredFoods? _currentPreferredFoods;
-  List<PreferredFoods?> _cachedPreferredFoods = [];
+  final List<PreferredFoods?> _cachedPreferredFoods = [];
 
   PreferredFoods? get currentPreferredFoods => _currentPreferredFoods;
   List<PreferredFoods?> get cachedPreferredFoods => _cachedPreferredFoods;

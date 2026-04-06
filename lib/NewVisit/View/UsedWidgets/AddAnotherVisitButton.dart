@@ -40,7 +40,6 @@ class _AddAnotherVisitButtonState extends State<AddAnotherVisitButton> {
       onPressed: () async {
         if (!verifyVisitInput(
             context,
-            NewVisitTEC.visitBMIController,
             NewVisitTEC.visitWeightController,
             NewVisitTEC.visitDateController)) {
           return;
@@ -55,6 +54,7 @@ class _AddAnotherVisitButtonState extends State<AddAnotherVisitButton> {
           return;
         } // Check if the widget is still mounted
 
+        if (!mounted) return;
         showMySnackBar(
           context,
           success

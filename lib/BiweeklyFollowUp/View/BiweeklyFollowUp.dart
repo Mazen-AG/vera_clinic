@@ -153,53 +153,8 @@ class _BiweeklyFollowUpState extends State<BiweeklyFollowUp> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Top client summary row
-                            Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: Card(
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 14.0, vertical: 12.0),
-                                  child: Row(
-                                    // In RTL, start = right, so this keeps all
-                                    // text visually aligned to the right side.
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.client.mName ?? 'بدون اسم',
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                      const SizedBox(width: 24),
-                                      Text(
-                                        'العمر: ${getAge(widget.client.mBirthdate)}',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                      const SizedBox(width: 24),
-                                      Text(
-                                        'الطول: ${widget.client.mHeight?.toStringAsFixed(0) ?? 'غير معروف'} سم',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // Enhanced patient summary card
+                            _buildPatientSummaryCard(),
                             const SizedBox(height: 20),
                             BiweeklyInbodyGrid(
                               client: widget.client,
@@ -228,6 +183,71 @@ class _BiweeklyFollowUpState extends State<BiweeklyFollowUp> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPatientSummaryCard() {
+    final name = widget.client.mName ?? 'بدون اسم';
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        elevation: 3,
+        shadowColor: const Color(0xFF1565C0).withValues(alpha: 0.15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFBBDEFB), width: 1),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+          child: Row(
+            children: [
+              // Name
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF263238),
+                ),
+              ),
+              const SizedBox(width: 20),
+              // Age
+              Text(
+                'العمر: ${getAge(widget.client.mBirthdate)}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF455A64),
+                ),
+              ),
+              const SizedBox(width: 20),
+              // Height
+              Text(
+                'الطول: ${widget.client.mHeight?.toStringAsFixed(0) ?? '—'} سم',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF455A64),
+                ),
+              ),
+              const SizedBox(width: 20),
+              // Weight
+              Text(
+                'الوزن: ${widget.client.mWeight?.toStringAsFixed(1) ?? '—'} كجم',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF455A64),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

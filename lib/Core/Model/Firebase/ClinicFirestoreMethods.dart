@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:retry/retry.dart';
 import 'package:vera_clinic/Core/Model/CustomExceptions.dart';
 

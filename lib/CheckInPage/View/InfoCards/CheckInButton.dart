@@ -50,14 +50,18 @@ class _CheckInButtonState extends State<CheckInButton> {
                   // Validate time input
                   final timeText = widget.checkInTimeController.text.trim();
                   if (timeText.isEmpty) {
-                    showMySnackBar(context, 'يرجى إدخال وقت تسجيل الدخول', Colors.red);
+                    showMySnackBar(
+                        context, 'يرجى إدخال وقت تسجيل الدخول', Colors.red);
                     return;
                   }
 
                   // Parse and validate time format (12-hour HH:MM)
                   final timeRegex = RegExp(r'^(0?[1-9]|1[0-2]):[0-5][0-9]$');
                   if (!timeRegex.hasMatch(timeText)) {
-                    showMySnackBar(context, 'تنسيق الوقت غير صحيح. استخدم HH:MM (1-12)', Colors.red);
+                    showMySnackBar(
+                        context,
+                        'تنسيق الوقت غير صحيح. استخدم HH:MM (1-12)',
+                        Colors.red);
                     return;
                   }
 
@@ -65,7 +69,8 @@ class _CheckInButtonState extends State<CheckInButton> {
                       widget.visitSubscriptionPriceController.text);
 
                   if (subscriptionPrice == null) {
-                    showMySnackBar(context, 'الرجاء إدخال سعر اشتراك صحيح', Colors.red);
+                    showMySnackBar(
+                        context, 'الرجاء إدخال سعر اشتراك صحيح', Colors.red);
                     return;
                   }
 
@@ -77,6 +82,7 @@ class _CheckInButtonState extends State<CheckInButton> {
                       .read<ClinicProvider>()
                       .isClientCheckedIn(widget.client!.mClientId);
                   if (isAlreadyCheckedIn) {
+                    if (!mounted) return;
                     showMySnackBar(context, 'العميل مسجل بالفعل', Colors.red);
                     return;
                   }
@@ -85,18 +91,21 @@ class _CheckInButtonState extends State<CheckInButton> {
                   final timeParts = timeText.split(':');
                   final hour = int.parse(timeParts[0]);
                   final minute = int.parse(timeParts[1]);
-                  final checkInDateTime = convert12To24Hour(hour, minute, CheckInPageTEC.isAM);
+                  final checkInDateTime =
+                      convert12To24Hour(hour, minute, CheckInPageTEC.isAM);
                   final checkInTimeISO = checkInDateTime.toIso8601String();
 
+                  if (!mounted) return;
                   await context
                       .read<ClinicProvider>()
                       .checkInClient(widget.client!, checkInTimeISO);
-                  await context
-                      .read<ClinicProvider>()
-                      .incrementDailyPatients();
+                  if (!mounted) return;
+                  await context.read<ClinicProvider>().incrementDailyPatients();
+                  if (!mounted) return;
                   await context
                       .read<ClinicProvider>()
                       .updateDailyIncome(subscriptionPrice);
+                  if (!mounted) return;
                   await context
                       .read<ClientProvider>()
                       .updateClient(widget.client!);
@@ -107,8 +116,8 @@ class _CheckInButtonState extends State<CheckInButton> {
                       builder: (context) => const HomePage()));
                 } catch (e) {
                   if (mounted) {
-                    showMySnackBar(
-                        context, 'فشل تسجيل الدخول: ${e.toString()}', Colors.red);
+                    showMySnackBar(context, 'فشل تسجيل الدخول: ${e.toString()}',
+                        Colors.red);
                   }
                 } finally {
                   if (mounted) {
