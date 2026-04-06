@@ -7,25 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:742125492849:android:b9309e0271aeca7ea899d0",
-        "android_client_info": {
-          "package_name": "com.example.roots_admin_portal"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCCbjA6-UwvUZTAs_M8-0dn8oHkEymFWbU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:742125492849:android:56e5502cfbe75689a899d0",
         "android_client_info": {
           "package_name": "com.example.vera_clinic"

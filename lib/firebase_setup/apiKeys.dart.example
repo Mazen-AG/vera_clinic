@@ -19,4 +19,8 @@ const String androidTestAppId = 'YOUR_ANDROID_TEST_APP_ID';
 const String windowsTestApiKey = 'YOUR_WINDOWS_TEST_API_KEY';
 const String windowsTestAppId = 'YOUR_WINDOWS_TEST_APP_ID';
 
+// Other secrets (example)
+// Google Drive URL for the Windows arrival alert sound.
+const String windowsArrivalAlertSoundDriveUrl =
+    'YOUR_WINDOWS_ARRIVAL_ALERT_SOUND_DRIVE_URL';
 

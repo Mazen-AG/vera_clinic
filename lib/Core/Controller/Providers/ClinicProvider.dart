@@ -214,6 +214,7 @@ class ClinicProvider with ChangeNotifier {
     final currentArrivalStates = _extractArrivalStates(clinic);
 
     final newClientIds = clinic!.getCheckedInClientIds().toSet();
+
     final currentClientIds = checkedInClients.map((c) => c.mClientId).toSet();
 
     bool listChanged = false;

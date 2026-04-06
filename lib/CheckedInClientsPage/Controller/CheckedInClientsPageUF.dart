@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vera_clinic/firebase_setup/apiKeys.dart';
 
 import '../../Core/Controller/Providers/ClinicProvider.dart';
 import '../../Core/Model/Classes/Client.dart';
@@ -37,10 +38,11 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
     fetchDataFuture = fetchData();
     _startPolling();
     _ensureAudioFileExists();
-    
+
     // Initialize _lastArrivedClientIds with current checked-in clients on first init
     final clinicProvider = context.read<ClinicProvider>();
-    if (_lastArrivedClientIds.isEmpty && clinicProvider.checkedInClients.isNotEmpty) {
+    if (_lastArrivedClientIds.isEmpty &&
+        clinicProvider.checkedInClients.isNotEmpty) {
       final clinic = clinicProvider.clinic;
       if (clinic != null) {
         _lastArrivedClientIds = clinicProvider.checkedInClients
@@ -48,7 +50,8 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
             .whereType<String>()
             .where((id) => clinic.hasClientArrived(id))
             .toSet();
-        mDebug('Initialized arrival tracking with ${_lastArrivedClientIds.length} already-arrived clients');
+        mDebug(
+            'Initialized arrival tracking with ${_lastArrivedClientIds.length} already-arrived clients');
       }
     }
   }
@@ -148,8 +151,7 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
     _lastArrivedClientIds = currentIds;
   }
 
-  static const String _driveDownloadUrl =
-      'https://drive.google.com/uc?export=download&id=1XRWxTvM5x5KWtaxnb4mnbIHn1PRkEL7W';
+  static const String _driveDownloadUrl = windowsArrivalAlertSoundDriveUrl;
 
   /// Download the alert sound from Google Drive if not already cached locally.
   Future<void> _ensureAudioFileExists() async {
@@ -159,7 +161,8 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
     try {
       if (!_audioInitLogged) {
         _audioInitLogged = true;
-        mDebug('Audio debug | platform: $defaultTargetPlatform | kIsWeb=$kIsWeb | player=${_audioPlayer.hashCode}');
+        mDebug(
+            'Audio debug | platform: $defaultTargetPlatform | kIsWeb=$kIsWeb | player=${_audioPlayer.hashCode}');
       }
       if (!_audioStreamsBound) {
         _audioStreamsBound = true;
@@ -192,7 +195,8 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
 
       final fileSize = await localFile.length();
       _cachedAudioPath = localPath;
-      mDebug('Audio debug | download completed ($fileSize bytes) -> $_cachedAudioPath');
+      mDebug(
+          'Audio debug | download completed ($fileSize bytes) -> $_cachedAudioPath');
     } catch (e, stack) {
       mDebug('Audio debug | ERROR downloading alert sound: $e');
       mDebug('Audio debug | stack: $stack');
@@ -201,28 +205,32 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
   }
 
   Future<void> _playArrivalSound() async {
-    mDebug('Audio debug | _playArrivalSound called | cachedPath=$_cachedAudioPath');
-    
+    mDebug(
+        'Audio debug | _playArrivalSound called | cachedPath=$_cachedAudioPath');
+
     if (kIsWeb) {
       mDebug('Platform is web, skipping audio');
       return;
     }
-    
+
     if (defaultTargetPlatform == TargetPlatform.windows) {
       // If we have a cached audio file, play it.
       if (_cachedAudioPath != null && File(_cachedAudioPath!).existsSync()) {
         try {
           mDebug('Playing custom audio from: $_cachedAudioPath');
           await _audioPlayer.stop();
-          mDebug('Audio debug | AudioPlayer state before play: ${_audioPlayer.state}');
+          mDebug(
+              'Audio debug | AudioPlayer state before play: ${_audioPlayer.state}');
           await _audioPlayer.play(
             DeviceFileSource(_cachedAudioPath!),
             volume: 1.0,
           );
-          mDebug('Audio debug | play() future completed, state=${_audioPlayer.state}');
+          mDebug(
+              'Audio debug | play() future completed, state=${_audioPlayer.state}');
           Future.delayed(const Duration(milliseconds: 1500), () {
             _audioPlayer.stop();
-            mDebug('Audio debug | forced stop after delay, state=${_audioPlayer.state}');
+            mDebug(
+                'Audio debug | forced stop after delay, state=${_audioPlayer.state}');
           });
           return;
         } catch (e, stack) {
@@ -230,12 +238,13 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
           mDebug('Audio debug | stack: $stack');
         }
       } else {
-        mDebug('Audio debug | No cached audio file available, path: $_cachedAudioPath');
+        mDebug(
+            'Audio debug | No cached audio file available, path: $_cachedAudioPath');
         // If no cached file yet, try to ensure it exists (async, won't block).
         _ensureAudioFileExists();
       }
     }
-    
+
     // Fallback to system sound.
     try {
       mDebug('Audio debug | Playing system sound fallback');
@@ -263,7 +272,8 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
       }
 
       final bytes = await consolidateHttpClientResponseBytes(response);
-      mDebug('Audio debug | HTTP response ${response.statusCode}, bytes=${bytes.length}');
+      mDebug(
+          'Audio debug | HTTP response ${response.statusCode}, bytes=${bytes.length}');
       await target.writeAsBytes(bytes, flush: true);
       mDebug('Audio debug | File written to ${target.path}');
     } finally {
@@ -272,4 +282,3 @@ class CheckedInClientsLogic with WidgetsBindingObserver {
     }
   }
 }
-

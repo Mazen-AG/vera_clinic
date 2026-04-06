@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
-
 import '../../../Core/Services/DebugLoggerService.dart';
+
 class Clinic {
   double? mDailyIncome;
   double? mMonthlyIncome;

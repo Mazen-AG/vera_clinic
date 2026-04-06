@@ -38,16 +38,17 @@ class _HomePageState extends State<HomePage> {
   // Run on test version first
   Future<void> _runMigrations() async {
     try {
-      // Run CMFU date migration first
-      await MigrationService().backfillMonthlyFollowUpDateFromLastVisit();
-      // Then backfill lastMonthlyFollowUpId from latest CMFU
-      await MigrationService().backfillClientLastMonthlyFollowUpId();
-      // Finally backfill notes field for existing CMFU documents
-      await MigrationService().backfillClientMonthlyFollowUpNotes();
-      // Delete clients with empty id
-      await MigrationService().deleteClientsWithEmptyId();
-      // Sync client weight and diet from latest records
-      await MigrationService().syncClientWeightAndDietFromLatestRecords();
+      // // Run CMFU date migration first
+      // await MigrationService().backfillMonthlyFollowUpDateFromLastVisit();
+      // // Then backfill lastMonthlyFollowUpId from latest CMFU
+      // await MigrationService().backfillClientLastMonthlyFollowUpId();
+      // // Finally backfill notes field for existing CMFU documents
+      // await MigrationService().backfillClientMonthlyFollowUpNotes();
+      // // Delete clients with empty id
+      // await MigrationService().deleteClientsWithEmptyId();
+      // // Sync client weight and diet from latest records
+      // await MigrationService().syncClientWeightAndDietFromLatestRecords();
+      await MigrationService().migrateCheckedInClientsFromIds();
     } catch (e) {
       mDebug('Error running migrations: $e');
     }
@@ -91,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 builder: (_) {
                   const isTesting = bool.fromEnvironment('TESTING');
                   return Text(
-                    isTesting ? '(Testing)' : '(Release)',
+                    isTesting ? '(Testing)' : '(Production)',
                     style: GoogleFonts.cairo(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,

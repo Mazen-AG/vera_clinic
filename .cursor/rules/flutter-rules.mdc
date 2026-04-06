@@ -546,6 +546,38 @@ textTheme: const TextTheme(
 ),
 ```
 
+## Completion Checklist
+
+When completing any big change or new feature:
+
+1. **Run CI locally**: Always run `scripts/run_ci_locally.ps1` to verify that:
+   - All tests pass (`flutter test`)
+   - Code analysis passes (`flutter analyze`)
+   - The app builds successfully (`flutter build`)
+   - No regressions are introduced
+
+2. **Update documentation**: If CI runs successfully, update the documentation files as needed:
+   - `README.md` - Update user-facing features, technical details, architecture, or app overview
+
+   Documentation should reflect the current state of the codebase and help both users and developers understand the changes.
+
+## Documentation sync
+
+When a task changes code behavior, architecture, UX, routes, storage, tests, CI, or dependencies, update docs in the same work session.
+
+Required docs:
+
+- `README.md` (user-facing docs and technical details)
+
+Enforcement:
+
+1. Before finishing implementation (or before commit if committing), review whether any behavior or structure changed.
+2. If changed, update the `README.md` accordingly.
+3. Verify referenced file paths/links exist after edits.
+4. After implementation is complete, run `scripts/run_ci_locally.ps1` to verify the full local CI pipeline passes (dependencies, analysis, formatting, tests). Do not consider a feature done until CI is green.
+
+Do not defer doc updates to a later PR unless explicitly requested.
+
 ## Documentation
 * **dartdoc:** Write dartdoc-style comments for all public APIs.
 

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vera_clinic/Core/Model/Firebase/FirebaseSingelton.dart';
+import 'package:vera_clinic/Core/Model/Firebase/ClinicFirestoreMethods.dart';
 import 'package:vera_clinic/Core/Model/Firebase/ClientMonthlyFollowUpFirestoreMethods.dart';
 import 'package:vera_clinic/Core/Controller/Providers/ClientProvider.dart';
 import 'package:vera_clinic/Core/Controller/Providers/VisitProvider.dart';
@@ -12,6 +13,90 @@ class MigrationService {
       ClientMonthlyFollowUpFirestoreMethods();
   final ClientProvider _clientProvider = ClientProvider();
   final VisitProvider _visitProvider = VisitProvider();
+
+  /// Migration for the Clinic document:
+  /// Ensures that all IDs listed in `checkedInClientsIds` also exist in the
+  /// `checkedInClients` map, and then removes the legacy `checkedInClientsIds`
+  /// array so that the app relies solely on the new structure.
+  Future<void> migrateCheckedInClientsFromIds() async {
+    try {
+      mDebug('Starting Clinic checked-in clients migration...');
+
+      final clinicRef = _firestore
+          .collection('Clinic')
+          .doc(ClinicFirestoreMethods.clinicDocumentId);
+      final doc = await clinicRef.get();
+
+      if (!doc.exists || doc.data() == null) {
+        mDebug('Clinic document not found. Nothing to migrate.');
+        return;
+      }
+
+      final Map<String, dynamic> data =
+          Map<String, dynamic>.from(doc.data() as Map<String, dynamic>);
+
+      // Read the current checked-in map, normalizing old string format to the
+      // new map format (checkInTime + hasArrived), similar to Clinic._migrateCheckedInClients.
+      final Map<String, dynamic> rawCheckedIn =
+          Map<String, dynamic>.from(data['checkedInClients'] ?? {});
+      final Map<String, Map<String, dynamic>> normalizedCheckedIn = {};
+
+      rawCheckedIn.forEach((clientId, value) {
+        if (value is String) {
+          normalizedCheckedIn[clientId] = {
+            'checkInTime': value,
+            'hasArrived': false,
+          };
+        } else if (value is Map) {
+          normalizedCheckedIn[clientId] =
+              Map<String, dynamic>.from(value as Map<String, dynamic>);
+        }
+      });
+
+      final List<String> idsFromArray =
+          List<String>.from(data['checkedInClientsIds'] ?? const []);
+
+      mDebug(
+          'Clinic migration | checkedInClients map IDs: ${normalizedCheckedIn.keys.toList()}');
+      mDebug(
+          'Clinic migration | checkedInClientsIds array: $idsFromArray');
+
+      final Set<String> mapIds = normalizedCheckedIn.keys.toSet();
+      final Set<String> arrayIds = idsFromArray.toSet();
+      final Set<String> missingInMap = arrayIds.difference(mapIds);
+
+      if (missingInMap.isEmpty) {
+        mDebug(
+            'Clinic migration | No missing IDs. Removing legacy checkedInClientsIds field only.');
+        await clinicRef.update({
+          'checkedInClients': normalizedCheckedIn,
+          'checkedInClientsIds': FieldValue.delete(),
+        });
+        return;
+      }
+
+      mDebug(
+          'Clinic migration | Backfilling ${missingInMap.length} ID(s) from checkedInClientsIds into checkedInClients: ${missingInMap.toList()}');
+
+      // Backfill missing IDs into the map with a default structure.
+      for (final clientId in missingInMap) {
+        normalizedCheckedIn[clientId] = {
+          'checkInTime': '',
+          'hasArrived': false,
+        };
+      }
+
+      await clinicRef.update({
+        'checkedInClients': normalizedCheckedIn,
+        'checkedInClientsIds': FieldValue.delete(),
+      });
+
+      mDebug(
+          'Clinic migration | Migration complete. Final checkedInClients IDs: ${normalizedCheckedIn.keys.toList()}');
+    } catch (e) {
+      mDebug('Error migrating Clinic checked-in clients: $e');
+    }
+  }
 
 // operation done on the clientMonthlyFollowUp collection
 // what this method does is that it backfills the date field in the

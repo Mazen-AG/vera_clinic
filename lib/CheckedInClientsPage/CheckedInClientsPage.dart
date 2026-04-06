@@ -6,6 +6,7 @@ import 'package:vera_clinic/Core/View/Reusable%20widgets/my_app_bar.dart';
 import '../Core/Controller/Providers/ClinicProvider.dart';
 import '../Core/Model/Classes/Clinic.dart';
 import '../Core/Model/Classes/Client.dart';
+import '../Core/Services/DebugLoggerService.dart';
 import 'CheckedInClientsList.dart';
 import 'Controller/CheckedInClientsPageUF.dart';
 
@@ -97,6 +98,8 @@ class _CheckedInClientsPageState extends State<CheckedInClientsPage> {
               return Consumer<ClinicProvider>(
                 builder: (context, clinicProvider, child) {
                   final checkedInClients = clinicProvider.checkedInClients;
+                  mDebug(
+                      'CheckedInClientsPage | displaying ${checkedInClients.length} client(s) with IDs: ${checkedInClients.map((c) => c.mClientId).toList()}');
                   if (checkedInClients.isEmpty) {
                     return Center(
                       child: Padding(
@@ -140,6 +143,11 @@ class _CheckedInClientsPageState extends State<CheckedInClientsPage> {
                         checkedInClients.where((c) => !clientHasArrived(c)).toList();
                     final arrived =
                         checkedInClients.where(clientHasArrived).toList();
+
+                    mDebug(
+                        'CheckedInClientsPage | arrived IDs: ${arrived.map((c) => c.mClientId).toList()}');
+                    mDebug(
+                        'CheckedInClientsPage | not arrived IDs: ${notArrived.map((c) => c.mClientId).toList()}');
 
                     _logic.handleArrivalNotifications(arrived);
 
